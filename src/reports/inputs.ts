@@ -1,33 +1,31 @@
-import { IsAlphanumeric, IsNumber, IsUrl, MinLength } from "class-validator";
+import { IsAlphanumeric, IsEmail, IsMobilePhone, IsNumber, IsUrl, MinLength, } from "class-validator";
 import { Field, InputType } from "type-graphql";
 
 
-@InputType()
-export class ReportInput {
-    @Field(()=> String)
-    site: String
+@InputType("CreateReportInput")
+export class CreateReportInput {
 
     @IsUrl()
     @Field(()=> String)
-    url: String
+    url: string
 
     @Field(()=> String)
-    comment: String
+    comment: string
 
-    @Field(()=> String)
-    token?: String
+    @Field(()=> String, { nullable: true, })
+    token?: string
 }
 
 
-@InputType()
+@InputType("FiltersInput")
 export class FiltersInput {
 
     @IsNumber()
-    @Field(()=> Number)
-    offset?: Number = 0
+    @Field(()=> Number, { defaultValue: 0 })
+    offset?: number
 
     @IsNumber()
-    @Field(()=> Number)
-    limit?: Number = 30
+    @Field(()=> Number, { defaultValue: 30 })
+    limit?: number
 
 }
