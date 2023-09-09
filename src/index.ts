@@ -12,6 +12,15 @@ import { connectToDb } from "./utils/database";
 import { resolvers } from "./resolvers";
 import { authChecker } from "./utils/authentication";
 
+var admin = require("firebase-admin");
+
+
+// setup firebase admmin
+var serviceAccount = require("./googleServices.json")
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount)
+});
+
 
 const start = async ()=> {
 
