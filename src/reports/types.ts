@@ -3,16 +3,16 @@ import { Field, ObjectType } from "type-graphql";
 
 
 
-// @ObjectType("ReportingAccount")
-// export class Account {
-//     @Field(()=> String)
-//     @prop({ required: true, })
-//     name: String
+@ObjectType("ReportingAccount")
+export class Account {
+    @Field(()=> String)
+    @prop({ required: true, })
+    name: String
 
-//     @Field(()=> String)
-//     @prop({ required: true, })
-//     email: String
-// }
+    @Field(()=> String)
+    @prop({ required: true, })
+    email: String
+}
 
 
 @ObjectType()
@@ -54,10 +54,9 @@ export class Report {
     @prop({  })
     comment: string
 
-
-    // @Field(()=> Account)
-    // @prop({  })
-    // account?: Account
+    @Field(()=> Account, { nullable: true, })
+    @prop({ required: false, })
+    account?: Account
 
     @Field(()=> Number)
     @prop({ required: true, default: new Date(), })
