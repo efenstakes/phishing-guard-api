@@ -29,10 +29,12 @@ export class ReportResolvers {
             return null
         }
         
-        const site = new URL(url as string).host.split(".").slice(
+        // just to ensure we remove www if it exists in the url
+        const siteComponentsList = new URL(url as string).host.split(".").slice(
             0,
             new URL(url as string).host.split(".").length - 1
-        ).join(" ")
+        )
+        const site = (siteComponentsList[0] == "www" ? siteComponentsList.slice(1, siteComponentsList.length) : siteComponentsList).join(" ")
 
         //  set reporting account to null as default, user is anonymous 
         let account = null
@@ -50,7 +52,7 @@ export class ReportResolvers {
 
         // report data
         const data = {
-            url,
+            url: new URL(url).origin,
             site,
             comment,
             account,
@@ -91,8 +93,11 @@ export class ReportResolvers {
 
 
     @Query(()=> SiteAnalytics, { nullable: true, })
-    async analytics( @Arg("site") site: string ) {
+    async analytics( @Arg("url") url: string ) {
 
+        console.log("url ", url)
+
+        const site = getSiteName(url)
         console.log("site ", site)
 
         return await SiteAnalyticsModel.findOne({ site, })
@@ -100,14 +105,29 @@ export class ReportResolvers {
 
     @Query(()=> [Report])
     async reports(
-        @Arg("site") site: string,
+        @Arg("url") url: string,
         @Arg("filters", { defaultValue: { offset: 0, limit: 30, }, nullable: true, }) filters: FiltersInput,
     ) {
         const { offset, limit, } = filters
 
-        console.log("site ", site, " offset ", offset, " limit ", limit)
+        console.log("url ", url, " offset ", offset, " limit ", limit)
+
+        const site = getSiteName(url)
+        console.log("site ", site)
+
 
         return await ReportModel.find({ site, }).lean().skip(offset).limit(limit)
     }
 
+}
+
+
+const getSiteName = (url: string)=> {
+    const siteComponentsList = new URL(url as string).host.split(".").slice(
+        0,
+        new URL(url as string).host.split(".").length - 1
+    )
+    const siteName = (siteComponentsList[0] == "www" ? siteComponentsList.slice(1, siteComponentsList.length) : siteComponentsList).join(" ")
+
+    return siteName
 }
